@@ -236,6 +236,11 @@ public class MainActivity extends Activity {
                     message.what=STATE_CONNECTED;
                     handler.sendMessage(message);
                     new Singleton(socket);
+                    try {
+                        socket = serverSocket.accept();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     sendReceive = new mainDevice.SendReceive(socket);
                     sendReceive.start();
 
@@ -296,12 +301,7 @@ public class MainActivity extends Activity {
             this.value = value;
         }
 
-        public static BluetoothSocket getInstance(BluetoothSocket value) {
-            if (instance == null) {
-                instance = new Singleton(value);
-            }
-            return value;
-        }
+
     }
 
 

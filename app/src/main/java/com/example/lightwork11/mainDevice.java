@@ -44,6 +44,8 @@ public class mainDevice extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_device);
         Intent intent = getIntent();
@@ -77,11 +79,12 @@ public class mainDevice extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+
                 Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.yellow);
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.PNG, 50, stream);
                 byte[] imageBytes = stream.toByteArray();
-                int subArraySize = 400;
+                int subArraySize = 4000;
                 MainActivity.sendReceive.write(String.valueOf(imageBytes.length).getBytes());
                 for (int i = 0; i < imageBytes.length; i += subArraySize) {
                     byte[] tempArray;
@@ -89,31 +92,11 @@ public class mainDevice extends AppCompatActivity {
                     tempArray = Arrays.copyOfRange(imageBytes, i, Math.min(imageBytes.length, i + subArraySize));
                     MainActivity.sendReceive.write(tempArray);
                 }
-                new CountDownTimer(intTM * 1000 - 2000, 1000) {
-                    public void onTick(long l) {
-                        timer.setText(" " + ((l / 1000) + 3));
-                    }
 
-                    public void onFinish() {
-                        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.black);
-                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                        bitmap.compress(Bitmap.CompressFormat.PNG, 50, stream);
-                        byte[] imageBytes = stream.toByteArray();
-                        int subArraySize = 400;
-                        MainActivity.sendReceive.write(String.valueOf(imageBytes.length).getBytes());
-                        for (int i = 0; i < imageBytes.length; i += subArraySize) {
-                            byte[] tempArray;
-
-                            tempArray = Arrays.copyOfRange(imageBytes, i, Math.min(imageBytes.length, i + subArraySize));
-                            MainActivity.sendReceive.write(tempArray);
-                        }
-                    }
-                }.start();
+                timer.setText("seconds remaining: ");
             }
         });
     }
-
-
 
 
     private void pickImageFromGallery() {
@@ -123,14 +106,15 @@ public class mainDevice extends AppCompatActivity {
         startActivityForResult(intent, 1);
     }
 
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == RESULT_OK && data != null && data.getData() != null) {
 
-            try{
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),data.getData());
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
                 img.setImageBitmap(bitmap);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -139,71 +123,68 @@ public class mainDevice extends AppCompatActivity {
     }
 
 
-
-    public static class SendReceive extends Thread{
+    public static class SendReceive extends Thread {
         private BluetoothSocket bluetoothSocket;
-        private final InputStream inputStream;
+        private static InputStream inputStream;
         private final OutputStream outputStream;
 
-        public SendReceive(BluetoothSocket socket){
+        public SendReceive(BluetoothSocket socket) {
             bluetoothSocket = socket;
             Log.d("qwe2", socket.toString());
-            InputStream tempIn=null;
-            OutputStream tempOut=null;
+            InputStream tempIn = null;
+            OutputStream tempOut = null;
 
             try {
-                tempIn=bluetoothSocket.getInputStream();
-                tempOut=bluetoothSocket .getOutputStream();
+                tempIn = bluetoothSocket.getInputStream();
+                tempOut = bluetoothSocket.getOutputStream();
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
-            inputStream=tempIn;
-            outputStream=tempOut;
+            inputStream = tempIn;
+            outputStream = tempOut;
 
         }
 
+        public void run()
 
-        public void run(){
+        {
             byte[] buffer = null;
             int numberOfBytes = 0;
             int index = 0;
             boolean flag = true;
-
-
-            while(true){
-                if(flag){
+            while (true) {
+                if (flag) {
                     try {
                         byte[] temp = new byte[inputStream.available()];
-                        if(inputStream.read(temp)>0){
-                            numberOfBytes=Integer.parseInt(new String(temp, "UTF-8"));
-                            buffer=new byte[numberOfBytes];
-                            flag=false;
+                        if (inputStream.read(temp) > 0) {
+                            numberOfBytes = Integer.parseInt(new String(temp, "UTF-8"));
+                            buffer = new byte[numberOfBytes];
+                            flag = false;
 
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                }else {
+                } else {
                     try {
-                        byte[] data = new byte[inputStream.available()];
-                        int numbers=inputStream.read(data);
+                        byte[] data = new byte[SendReceive.inputStream.available()];
+                        int numbers = SendReceive.inputStream.read(data);
 
-                        System.arraycopy(data,0,buffer,index,numbers);
-                        index=index+numbers;
+                        System.arraycopy(data, 0, buffer, index, numbers);
+                        index = index + numbers;
 
 
-                        if(index==numberOfBytes){
-                            handler.obtainMessage(STATE_MESSAGE_RECEIVED,numberOfBytes,-1,buffer).sendToTarget();
+                        if (index == numberOfBytes) {
+                            handler.obtainMessage(STATE_MESSAGE_RECEIVED, numberOfBytes, -1, buffer).sendToTarget();
 //                            Intent intent1 = new Intent(mainDevice.this, secDevice.class);
 //                            intent1.putExtra("numberOfBytes", numberOfBytes);
 //                            intent1.putExtra("int",-1);
 //                            intent1.putExtra("buffer", buffer);
 
 //                            startActivity(intent1);
-                            flag=true;
-                            index=0;
-
+                            flag = true;
+                            index = 0;
 
 
                         }
@@ -212,9 +193,16 @@ public class mainDevice extends AppCompatActivity {
                     }
                 }
             }
-
         }
-        public void write(byte[] bytes){
+
+
+
+
+
+
+
+
+    public void write(byte[] bytes){
             try {
                 outputStream.write(bytes);
                 outputStream.flush();
