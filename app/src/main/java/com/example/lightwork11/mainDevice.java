@@ -8,6 +8,7 @@ import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -34,7 +35,7 @@ import static com.example.lightwork11.secDevice.handler;
 public class mainDevice extends AppCompatActivity {
     TextView timer;
     EditText timerET;
-    Button chooseimg, yellowBT, savebt;
+    Button chooseimg, yellowBT, savebt, blue, green, red, lblue, white, sendimg;
     ImageView img;
     BluetoothSocket bluetoothSocket;
     public int intTM = 0;
@@ -47,16 +48,24 @@ public class mainDevice extends AppCompatActivity {
 
 
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main_device);
+
         Intent intent = getIntent();
         Intent intent1 = getIntent();
         String btsocket = intent.getStringExtra("btsocket");
+        sendimg = (Button) findViewById(R.id.sendimg);
         chooseimg = (Button) findViewById(R.id.chooseimg);
         timer = (TextView) findViewById(R.id.timer);
         img = (ImageView) findViewById(R.id.imageView2);
         yellowBT = (Button) findViewById(R.id.yellowBT);
         savebt = (Button) findViewById(R.id.timerEtBT);
         timerET = (EditText) findViewById(R.id.timerET);
+        blue = (Button) findViewById(R.id.blue);
+        green = (Button) findViewById(R.id.green);
+        red = (Button) findViewById(R.id.red);
+        lblue = (Button) findViewById(R.id.lblue);
+        white = (Button) findViewById(R.id.white);
         chooseimg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -73,6 +82,45 @@ public class mainDevice extends AppCompatActivity {
             }
 
 
+        });
+
+        sendimg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bitmap bitmap = ((BitmapDrawable)img.getDrawable()).getBitmap();
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG, 50, stream);
+                byte[] imageBytes = stream.toByteArray();
+                int subArraySize = 400;
+                MainActivity.sendReceive.write(String.valueOf(imageBytes.length).getBytes());
+                for (int i = 0; i < imageBytes.length; i += subArraySize) {
+                    byte[] tempArray;
+
+                    tempArray = Arrays.copyOfRange(imageBytes, i, Math.min(imageBytes.length, i + subArraySize));
+                    MainActivity.sendReceive.write(tempArray);
+                }
+                new CountDownTimer(intTM * 1000 - 4500, 1000) {
+                    public void onTick(long l) {
+                        timer.setText("In progress");
+                    }
+
+                    public void onFinish() {
+                        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.black);
+                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 50, stream);
+                        byte[] imageBytes = stream.toByteArray();
+                        int subArraySize = 400;
+                        MainActivity.sendReceive.write(String.valueOf(imageBytes.length).getBytes());
+                        for (int i = 0; i < imageBytes.length; i += subArraySize) {
+                            byte[] tempArray;
+
+                            tempArray = Arrays.copyOfRange(imageBytes, i, Math.min(imageBytes.length, i + subArraySize));
+                            MainActivity.sendReceive.write(tempArray);
+                            timer.setText("Done");
+                        }
+                    }
+                }.start();
+            }
         });
 
         yellowBT.setOnClickListener(new View.OnClickListener() {
@@ -94,8 +142,225 @@ public class mainDevice extends AppCompatActivity {
                 }
 
                 timer.setText("seconds remaining: ");
+                new CountDownTimer(intTM * 1000 - 4500, 1000) {
+                    public void onTick(long l) {
+                        timer.setText("In progress");
+                    }
+
+                    public void onFinish() {
+                        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.black);
+                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 50, stream);
+                        byte[] imageBytes = stream.toByteArray();
+                        int subArraySize = 400;
+                        MainActivity.sendReceive.write(String.valueOf(imageBytes.length).getBytes());
+                        for (int i = 0; i < imageBytes.length; i += subArraySize) {
+                            byte[] tempArray;
+
+                            tempArray = Arrays.copyOfRange(imageBytes, i, Math.min(imageBytes.length, i + subArraySize));
+                            MainActivity.sendReceive.write(tempArray);
+                            timer.setText("Done");
+                        }
+                    }
+                }.start();
             }
         });
+        red.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.red1);
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG, 50, stream);
+                byte[] imageBytes = stream.toByteArray();
+                int subArraySize = 400;
+                MainActivity.sendReceive.write(String.valueOf(imageBytes.length).getBytes());
+                for (int i = 0; i < imageBytes.length; i += subArraySize) {
+                    byte[] tempArray;
+
+                    tempArray = Arrays.copyOfRange(imageBytes, i, Math.min(imageBytes.length, i + subArraySize));
+                    MainActivity.sendReceive.write(tempArray);
+                }
+                new CountDownTimer(intTM * 1000 - 4000, 1000) {
+                    public void onTick(long l) {
+                        timer.setText("In progress");
+                    }
+
+                    public void onFinish() {
+                        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.black);
+                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 50, stream);
+                        byte[] imageBytes = stream.toByteArray();
+                        int subArraySize = 400;
+                        MainActivity.sendReceive.write(String.valueOf(imageBytes.length).getBytes());
+                        for (int i = 0; i < imageBytes.length; i += subArraySize) {
+                            byte[] tempArray;
+
+                            tempArray = Arrays.copyOfRange(imageBytes, i, Math.min(imageBytes.length, i + subArraySize));
+                            MainActivity.sendReceive.write(tempArray);
+                            timer.setText("Done");
+                        }
+                    }
+                }.start();
+            }
+        });
+        blue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.blue);
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG, 50, stream);
+                byte[] imageBytes = stream.toByteArray();
+                int subArraySize = 400;
+                MainActivity.sendReceive.write(String.valueOf(imageBytes.length).getBytes());
+                for (int i = 0; i < imageBytes.length; i += subArraySize) {
+                    byte[] tempArray;
+
+                    tempArray = Arrays.copyOfRange(imageBytes, i, Math.min(imageBytes.length, i + subArraySize));
+                    MainActivity.sendReceive.write(tempArray);
+                }
+                new CountDownTimer(intTM * 1000 - 4000, 1000) {
+                    public void onTick(long l) {
+                        timer.setText("In progress");
+                    }
+
+                    public void onFinish() {
+                        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.black);
+                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 50, stream);
+                        byte[] imageBytes = stream.toByteArray();
+                        int subArraySize = 400;
+                        MainActivity.sendReceive.write(String.valueOf(imageBytes.length).getBytes());
+                        for (int i = 0; i < imageBytes.length; i += subArraySize) {
+                            byte[] tempArray;
+
+                            tempArray = Arrays.copyOfRange(imageBytes, i, Math.min(imageBytes.length, i + subArraySize));
+                            MainActivity.sendReceive.write(tempArray);
+                            timer.setText("Done");
+                        }
+                    }
+                }.start();
+            }
+        });
+        green.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.green);
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG, 50, stream);
+                byte[] imageBytes = stream.toByteArray();
+                int subArraySize = 400;
+                MainActivity.sendReceive.write(String.valueOf(imageBytes.length).getBytes());
+                for (int i = 0; i < imageBytes.length; i += subArraySize) {
+                    byte[] tempArray;
+
+                    tempArray = Arrays.copyOfRange(imageBytes, i, Math.min(imageBytes.length, i + subArraySize));
+                    MainActivity.sendReceive.write(tempArray);
+                }
+                new CountDownTimer(intTM * 1000 - 4000, 1000) {
+                    public void onTick(long l) {
+                        timer.setText("In progress");
+                    }
+
+                    public void onFinish() {
+                        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.black);
+                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 50, stream);
+                        byte[] imageBytes = stream.toByteArray();
+                        int subArraySize = 400;
+                        MainActivity.sendReceive.write(String.valueOf(imageBytes.length).getBytes());
+                        for (int i = 0; i < imageBytes.length; i += subArraySize) {
+                            byte[] tempArray;
+
+                            tempArray = Arrays.copyOfRange(imageBytes, i, Math.min(imageBytes.length, i + subArraySize));
+                            MainActivity.sendReceive.write(tempArray);
+                            timer.setText("Done");
+                        }
+                    }
+                }.start();
+            }
+        });
+        lblue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.lblue);
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG, 50, stream);
+                byte[] imageBytes = stream.toByteArray();
+                int subArraySize = 400;
+                MainActivity.sendReceive.write(String.valueOf(imageBytes.length).getBytes());
+                for (int i = 0; i < imageBytes.length; i += subArraySize) {
+                    byte[] tempArray;
+
+                    tempArray = Arrays.copyOfRange(imageBytes, i, Math.min(imageBytes.length, i + subArraySize));
+                    MainActivity.sendReceive.write(tempArray);
+                }
+                new CountDownTimer(intTM * 1000 - 4000, 1000) {
+                    public void onTick(long l) {
+                        timer.setText("In progress");
+                    }
+
+                    public void onFinish() {
+                        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.black);
+                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 50, stream);
+                        byte[] imageBytes = stream.toByteArray();
+                        int subArraySize = 400;
+                        MainActivity.sendReceive.write(String.valueOf(imageBytes.length).getBytes());
+                        for (int i = 0; i < imageBytes.length; i += subArraySize) {
+                            byte[] tempArray;
+
+                            tempArray = Arrays.copyOfRange(imageBytes, i, Math.min(imageBytes.length, i + subArraySize));
+                            MainActivity.sendReceive.write(tempArray);
+                            timer.setText("Done");
+                        }
+                    }
+                }.start();
+            }
+        });
+        white.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.white);
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG, 50, stream);
+                byte[] imageBytes = stream.toByteArray();
+                int subArraySize = 400;
+                MainActivity.sendReceive.write(String.valueOf(imageBytes.length).getBytes());
+                for (int i = 0; i < imageBytes.length; i += subArraySize) {
+                    byte[] tempArray;
+
+                    tempArray = Arrays.copyOfRange(imageBytes, i, Math.min(imageBytes.length, i + subArraySize));
+                    MainActivity.sendReceive.write(tempArray);
+                }
+                new CountDownTimer(intTM * 1000 - 4000, 1000) {
+                    public void onTick(long l) {
+                        timer.setText("In progress");
+                    }
+
+                    public void onFinish() {
+                        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.black);
+                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 50, stream);
+                        byte[] imageBytes = stream.toByteArray();
+                        int subArraySize = 400;
+                        MainActivity.sendReceive.write(String.valueOf(imageBytes.length).getBytes());
+                        for (int i = 0; i < imageBytes.length; i += subArraySize) {
+                            byte[] tempArray;
+
+                            tempArray = Arrays.copyOfRange(imageBytes, i, Math.min(imageBytes.length, i + subArraySize));
+                            MainActivity.sendReceive.write(tempArray);
+                            timer.setText("Done");
+                        }
+                    }
+                }.start();
+            }
+        });
+
     }
 
 
@@ -116,6 +381,7 @@ public class mainDevice extends AppCompatActivity {
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
                 img.setImageBitmap(bitmap);
+
             } catch (IOException e) {
                 e.printStackTrace();
             }

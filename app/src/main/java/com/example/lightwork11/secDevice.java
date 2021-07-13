@@ -19,6 +19,7 @@ public class secDevice extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_sec_device);
         imageView = (ImageView) findViewById(R.id.imageView);
 
